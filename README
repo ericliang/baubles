@@ -1,0 +1,3 @@
+user_distribution_lite.py:
+	Plot the user distribution by ip to a map
+see http://lieeil.blog.com/2011/01/27/user-distribution/
