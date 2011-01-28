@@ -29,6 +29,7 @@ for line in f:
 #
 ####################
 
+log = open("user_distribution_lite.log","wt")
 gic = pygeoip.GeoIP('/home/sunny/Downloads/GeoLiteCity.dat')
 
 cities = []
@@ -36,6 +37,7 @@ lons = []
 lats = []
 city_numbers = []
 number_nocity = 0
+number_norecord = 0
 number_foreign = 0
 number_cn = 0
 for ip,number in zip(ips, numbers):
@@ -46,7 +48,12 @@ for ip,number in zip(ips, numbers):
             number_cn += number
         
             city, lon, lat = R.get('city'), R.get('longitude'), R.get('latitude')
-            
+
+            if city == None:
+                print >> log, "IP NO CITY: ",ip,
+                number_nocity += number
+                continue
+
             try:
                 i = cities.index(city)
                 city_numbers[i] += number
@@ -60,11 +67,15 @@ for ip,number in zip(ips, numbers):
             number_foreign += number
         
     except AttributeError:
-        number_nocity += number
+        print >>log,  "IP NO RECORD: ",ip,
+        number_norecord += number
 
-print 'Ip in China number: ', number_cn
-print 'Ip out of China number: ', number_foreign
-print 'Ip unknown number: ', number_nocity
+print >>log, 'Ip in China number: ', number_cn
+print >>log, 'Ip out of China number: ', number_foreign
+print >>log, 'Ip no city info number: ', number_nocity
+print >>log, 'Ip no record in db number: ', number_norecord
+
+log.close()
 
 #print cities, lons, lats
 
